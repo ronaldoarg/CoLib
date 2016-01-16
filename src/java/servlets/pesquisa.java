@@ -47,7 +47,7 @@ public class pesquisa extends HttpServlet {
      
         if (session != null && nome != null) {
     
-            String busca = request.getParameter("nomeDoLivro");
+            String busca = request.getParameter("nomeDoLivro").toLowerCase();
             CharSequence b = busca;
             
             System.out.println("busca: "+busca);
@@ -75,16 +75,13 @@ public class pesquisa extends HttpServlet {
                 
                 List<Livro> livros = new ArrayList<Livro>();
                 
-                //Boolean possui = false;
-                
                 while(consultaLivros.next()) {
                 
                     String nomeLivro = consultaLivros.getString("nome");
-                    Boolean possui = nomeLivro.contains(b);
-                    
-                    System.out.println("b: "+b);
-                    System.out.println("nome livro: "+nomeLivro);
-                    System.out.println(possui);
+                    Boolean possui = nomeLivro.toLowerCase().contains(b);
+               
+                    System.out.println("------------------------------------------\nb: "+b);
+                    System.out.println("busca: "+nomeLivro.toLowerCase());
                     
                     if(possui) {
                         
@@ -100,6 +97,7 @@ public class pesquisa extends HttpServlet {
                 }
          
                 session.setAttribute("resultadoBusca", livros);
+                session.setAttribute("busca", "true");
          
                 response.sendRedirect("main");
                 

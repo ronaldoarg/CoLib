@@ -28,6 +28,7 @@
     <% String cadastroLivroError = (String)request.getAttribute("cadastroLivroError");%>
 
     <body>
+        <!-- Menu Superior -->
         <nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
 
@@ -44,6 +45,7 @@
         
         <div class="container" style="margin-top: 70px;">
             <div class="row">
+                <!-- Buscar Livro -->
                 <div class="col-lg-8">
                     <h3>Encontre um livro novo</h3>
                     <form action="pesquisa" class="form-inline col-lg-12">
@@ -53,6 +55,8 @@
                         <button type="submit" class="btn btn-primary">Pesquisar</button>
                     </form>
                 </div>
+                
+                <!-- Cadastrar livro -->
                 <div class="col-lg-4">
                     <h3>Cadastre um livro novo</h3>
                     <form class="form-inline col-lg-12">
@@ -62,7 +66,7 @@
             </div>
            
             
-            <!-- Modal novo livro -->
+            <!-- Modal de cadastro novo livro -->
             <div class="modal fade" id="modalNovoLivro" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -105,7 +109,8 @@
             </div><!-- /.modal -->
             <!-- Fim modal novo livro -->
             
-            <div class="col-lg-12">
+            <!-- Meus livros -->
+            <div class="col-lg-12" id="meuslivros">
                 
                 <br/><br/>
                     
@@ -133,14 +138,16 @@
                     <% } %>
             </div>
             
+            <!-- Resultado da busca -->
             <div class="col-lg-12">
                 
                 <br/><br/>
                     
-                <% List<Livro> livrosBusca = (List<Livro>) request.getAttribute("resultadoBusca");
+                <% if(request.getAttribute("busca") != null) {
+                    List<Livro> livrosBusca = (List<Livro>) request.getAttribute("resultadoBusca");
                     if (livrosBusca != null && livrosBusca.size() > 0) { %>
                     
-                <h3>Resultado Busca</h3>
+                <h3>Livros encontrados</h3>
                 
                 <%for (Livro a : livrosBusca) { %>
                         
@@ -158,10 +165,12 @@
                     } else { %>
                     
                     <h3>A busca não encontrou livros relacionados.</h3>
-                    <% } %>
+                    <% } }%>
             </div>
             
         </div>
+        
+        <!-- Scripts -->
         <script> 
             <% if(cadastroLivroError != null) {%>
                 $("#modalNovoLivro").modal('show');
@@ -170,7 +179,9 @@
                 $("#cadastrolivroedicao").addClass('has-error');
                 
                 
-            <%}%>
+            <% } if(request.getAttribute("busca") != null) { %>
+                $("#meuslivros").addClass('hidden');
+            <% } %>
         </script>
         
     </body>

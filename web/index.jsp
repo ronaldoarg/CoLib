@@ -22,7 +22,19 @@
         String cadastroError = (String)request.getAttribute("cadastroerror");
         String loginError = (String)request.getAttribute("loginError");
         String emailError = (String)request.getAttribute("emailerror"); 
-    
+
+        String emailCookie = "";
+        String senhaCookie = "";
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if (c.getName().equals("colib.login.email")) {
+                    emailCookie = c.getValue();
+                } if (c.getName().equals("colib.login.senha")) {
+                    senhaCookie = c.getValue();
+                }
+            }
+        }
     %>
     
     <body>
@@ -41,11 +53,16 @@
                 <%}%>
                 <div class="form-group" id="emailLogin">
                     <label for="exampleInputEmail1">Email</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" <%if(email!=null){%>value="<%=email%>"<%}%> name="email" placeholder="Email">
+                    <input type="email" class="form-control" id="exampleInputEmail1" <%if(email!=null){%>value="<%=email%>"<%} else {%>value="<%= emailCookie%>"<%}%> name="email" placeholder="Email">
                 </div>
                 <div class="form-group" id="senhaLogin">
                     <label for="exampleInputPassword1">Senha</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" name="senha" placeholder="Password">
+                    <input type="password" class="form-control" id="exampleInputPassword1" name="senha" value="<%= senhaCookie%>" placeholder="Senha">
+                </div>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" name="lembrar">Lembrar-me
+                  </label>
                 </div>
                 <button type="submit" class="btn btn-primary pull-right">Entrar</button>
             </form>

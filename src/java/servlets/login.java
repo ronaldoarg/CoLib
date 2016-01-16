@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +42,9 @@ public class login extends HttpServlet {
         
         String email = request.getParameter("email");
         String senha = request.getParameter("senha");
+        String lembrar = request.getParameter("lembrar");
+        
+        System.out.println("lembrar ------------ \n"+lembrar);
         
         int idEmail = 0;
         Boolean emailExiste = false;
@@ -117,7 +121,14 @@ public class login extends HttpServlet {
                     connection.close();
 
                     HttpSession session = request.getSession(true);
-                    
+                    if(lembrar != null) {
+                        Cookie cookieEmail = new Cookie("colib.login.email", email);
+                        Cookie cookieSenha = new Cookie("colib.login.senha", senha);
+                        cookieEmail.setMaxAge(2629743);
+                        cookieSenha.setMaxAge(2629743);
+                        response.addCookie(cookieEmail);
+                        response.addCookie(cookieSenha);
+                    }
                     session.setAttribute("nome", nome);
                     session.setAttribute("dataLogin", new Date());
                     session.setAttribute("id", idEmail);

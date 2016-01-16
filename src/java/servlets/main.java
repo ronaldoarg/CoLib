@@ -48,8 +48,6 @@ public class main extends HttpServlet {
         int id = (int)session.getAttribute("id");
         String nome = (String)session.getAttribute("nome");
         if (session != null && nome != null) {
-        
-            System.out.println("ID do "+nome+": "+id);
             
             try {
                 Class.forName("com.mysql.jdbc.Driver");
@@ -90,7 +88,9 @@ public class main extends HttpServlet {
             request.setAttribute("cadastroLivroError", cadastroLivroError);         
             
             request.setAttribute("resultadoBusca", session.getAttribute("resultadoBusca"));
+            request.setAttribute("busca", session.getAttribute("busca"));
             
+           
             request.setAttribute("nome", (String)session.getAttribute("nome"));
             request.setAttribute("data", session.getAttribute("dataLogin"));
             RequestDispatcher rd = request.getRequestDispatcher("/main.jsp");
