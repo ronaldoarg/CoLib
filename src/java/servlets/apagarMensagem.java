@@ -7,7 +7,6 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import static java.lang.Integer.parseInt;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -24,7 +23,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author ronaldo
  */
-public class mensagem extends HttpServlet {
+public class apagarMensagem extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,33 +40,26 @@ public class mensagem extends HttpServlet {
         HttpSession session = request.getSession(false);
         String eu = (String)session.getAttribute("nome");
         
-        String resposta = request.getHeader("referer").substring(28);
-        
-        System.out.println(resposta);
-        
         if (session != null && eu != null) {
-            int msgPara = Integer.parseInt(request.getParameter("para"));
-
-            String assuntoMensagem = request.getParameter("assuntoMensagem");
-            String conteudoMensagem = request.getParameter("conteudoMensagem");
+            int idMsgToDelete = Integer.parseInt(request.getParameter("msgToDelete"));
             
-            int id = (int)session.getAttribute("id");
-
             try {
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/colib?zeroDateTimeBehavior=convertToNull", "root", "admin");
                 Statement statement = conexao.createStatement();
                                 
-                String novaMensagem = "INSERT INTO mensagens (de_id, de_nome, para, assunto, conteudo, visivel) VALUES ("+id+",\""+eu+"\","+msgPara+",\""+assuntoMensagem+"\",\""+conteudoMensagem+"\","+true+")";
+                String novaMensagem = "UPDATE mensagens SET visivel=0 WHERE id = "+idMsgToDelete+"";
                 
                 System.out.println(novaMensagem);
                 
                 int delnum = statement.executeUpdate(novaMensagem);
 
-                response.sendRedirect(resposta);
                 
                 statement.close();
                 conexao.close();
+                
+                response.sendRedirect("verMensagem");
+                
             
                 }  catch (ClassNotFoundException | SQLException ex) {
                     Logger.getLogger(cadastroLivro.class.getName()).log(Level.SEVERE, null, ex);

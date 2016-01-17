@@ -49,6 +49,7 @@ public class verMensagem extends HttpServlet {
         int id = (int)session.getAttribute("id");
         
         System.out.println("#################\nid: "+id);
+        System.out.println("#################\nnome: "+nome);
      
         if (session != null && nome != null) {
     
@@ -90,9 +91,15 @@ public class verMensagem extends HttpServlet {
          
                 System.out.println("##############\nTamanho da lista de mensagens: "+mensagens.size());
                 
-                request.setAttribute("mensagens", mensagens);
+                //session.setAttribute("listaMensagens", mensagens);
+                //session.setAttribute("verMensagens", "true");
                 
-                response.sendRedirect("mensagens.jsp");
+                request.setAttribute("listaMensagens", mensagens);
+                request.setAttribute("verMensagens", "true");
+                request.setAttribute("nome", nome);
+
+                RequestDispatcher rd = request.getRequestDispatcher("/mensagens.jsp");
+                rd.forward(request, response);
                                 
                 }  catch (ClassNotFoundException | SQLException ex) {
                     Logger.getLogger(pesquisa.class.getName()).log(Level.SEVERE, null, ex);

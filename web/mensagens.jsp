@@ -115,24 +115,99 @@
             </div><!-- /.modal -->
             <!-- Fim modal novo livro -->    
         </div>
-        
-                                <h1><%=nome%></h1>                        
                                 
         <div class="container">
-         <% List<Mensagem> mensagens = (List<Mensagem>) request.getAttribute("mensagens");
-            if (mensagens != null && mensagens.size() > 0) { %>
-
-                <h4>Minhas mensagens</h4>
-
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>sa.kjdhf</thead>
-                    </table>
-                </div>
-          <%}%>
-        
-        </div>
+            <br/><br/>
+            <h3>Suas mensagens</h3>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="col-lg-2">Quem mandou</th>
+                            <th class="col-lg-2">Assunto</th>
+                            <th class="col-lg-6">Mensagem</th>
+                            <th class="col-lg-1">Responder</th>
+                            <th class="col-lg-1">Apagar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <% List<Mensagem> minhasMensagens = (List<Mensagem>) request.getAttribute("listaMensagens");
+                       if (minhasMensagens != null && minhasMensagens.size() > 0) { %>
+                       <% for (Mensagem m : minhasMensagens)  { %>
+                        <tr>
+                            <td scope="row"><%=m.getDe_nome()%></td>
+                            <td><%=m.getAssunto()%></td>
+                            <td><%=m.getConteudo()%></td>
+                            <td>
+                                <button class="btn btn-default" data-toggle="modal" data-target="#modalMensagem" data-id="<%= m.getDe_id() %>" id="responderMensagem">
+                                    <span class="glyphicon glyphicon-share-alt"> Responder</span>
+                                </button>
                                 
-    </body>
+                            </td>
+                            <td>
+                                <form action="apagarMensagem" method="POST">
+                                    <button class="btn btn-danger" name="msgToDelete" value="<%=m.getId() %>">
+                                        <span class="glyphicon glyphicon-trash"> Apagar</span>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <%}%>
+                        <%} else {%>
+                    </tbody>
+                </table>
+                    <h3>Você não possui mensagens :(</h3>
+                
+                        <%}%>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
+        <!-- Modal mensagem -->
+        <div class="modal fade" id="modalMensagem" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Escreva sua mensagem abaixo</h4>
+                    </div>
+                    <div class="modal-body col-lg-10 col-lg-offset-1">
+
+                        <!-- Mensagem -->
+                        <form action="mensagem" method="POST">
+
+                            <div class="form-group">
+                                <label for="inputAssunto">Assunto</label>
+                                <input type="text" class="form-control" name="assuntoMensagem" placeholder="Empréstimo de livro">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputMensagem">Mensagem</label>
+                                <textarea class="form-control" rows="4"  name="conteudoMensagem"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-success pull-right" id="enviarMensagem" name="para">Enviar</button>
+                            <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancelar</button>
+                        </form>       
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <!-- Fim modal mensagem -->
+         
+        <script>
+            $('#modalMensagem').on('show.bs.modal', function() {
+
+                var msgPara = $('#responderMensagem').data('id');
+                $('#enviarMensagem').val(msgPara);
+
+            });
+        </script>
+        
+    </body>
 </html>
+
+

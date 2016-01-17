@@ -87,7 +87,8 @@ public class main extends HttpServlet {
             
             request.setAttribute("resultadoBusca", session.getAttribute("resultadoBusca"));
             request.setAttribute("busca", session.getAttribute("busca"));
-            
+            request.setAttribute("listaMensagens", session.getAttribute("listaMensagens"));
+            request.setAttribute("verMensagens", session.getAttribute("verMensagens"));
            
             request.setAttribute("nome", (String)session.getAttribute("nome"));
             request.setAttribute("data", session.getAttribute("dataLogin"));

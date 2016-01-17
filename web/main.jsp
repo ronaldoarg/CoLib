@@ -5,6 +5,7 @@
 --%>
 
 <%@page import="classes.Livro"%>
+<%@page import="classes.Mensagem"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Date"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -23,10 +24,11 @@
         
     </head>
 
-    <% String nome = (String)request.getAttribute("nome");%>
-    <% Date data = (Date)request.getAttribute("data");%>
-    <% String cadastroLivroError = (String)request.getAttribute("cadastroLivroError");%>
-
+    <% String nome = (String)request.getAttribute("nome");
+       Date data = (Date)request.getAttribute("data");
+       String cadastroLivroError = (String)request.getAttribute("cadastroLivroError");
+    %>
+    
     <body>
         <!-- Menu Superior -->
         <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -43,7 +45,7 @@
                 
                 <a href="verMensagem">
                     <button type="button" class="btn btn-default navbar-btn pull-right">
-                        <span class="glyphicon glyphicon glyphicon-envelope" aria-hidden="true"> Mensagens</span>                       
+                        <span class="glyphicon glyphicon glyphicon-envelope" aria-hidden="true"> Minhas Mensagens</span>                       
                     </button>
                 </a>
                 
@@ -105,7 +107,7 @@
                                 </div>
 
                                 <button type="submit" class="btn btn-success pull-right">Enviar</button>
-                                <button type="button" class="btn btn-dafault pull-right" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancelar</button>
                             </form>       
                         </div>
                         <div class="modal-footer">
@@ -114,33 +116,39 @@
                 </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->
             <!-- Fim modal novo livro -->
-            
+             
             <!-- Meus livros -->
             <div class="col-lg-12" id="meuslivros">
                 
                 <br/><br/>
                     
                 <% List<Livro> livros = (List<Livro>) request.getAttribute("livrosLista");
+                    int cont = 0;
                     if (livros != null && livros.size() > 0) { %>
+                    
                     
                 <h3>Seus livros</h3>
                 
-                <%for (Livro a : livros) { %>
-                        
-                <div class="col-lg-3 text-right">
-                    <img src="http://static7.depositphotos.com/1238677/724/i/950/depositphotos_7243722-Gray-book-isolated-on-white-.-Clean-cover.jpg" class="img-responsive" alt="<%=a.getNome() %>" title="<%=a.getNome() %>"/>
-                    <h3><%=a.getNome() %></h3>
-                    <p><%= a.getAutor() %></p>
-                    <p><%= a.getEdicao() %>ª Edição</p>
-                    <% if(a.isDisponivel() == false) { %>
-                    <div class="alert alert-warning text-center" role="alert">
-                        Esse livro está emprestado
-                    </div><%}%>
-                </div>
-                        <% }
-                    } else { %>
+                <div class="row">
+                
+                    <%for (Livro a : livros) { %>
+                    <% cont++; %>        
+                    <div class="col-lg-3 text-right">
+                        <img src="http://static7.depositphotos.com/1238677/724/i/950/depositphotos_7243722-Gray-book-isolated-on-white-.-Clean-cover.jpg" class="img-responsive" alt="<%=a.getNome() %>" title="<%=a.getNome() %>"/>
+                        <h3><%=a.getNome() %></h3>
+                        <p><%= a.getAutor() %></p>
+                        <p><%= a.getEdicao() %>ª Edição</p>
+                        <% if(a.isDisponivel() == false) { %>
+                        <div class="alert alert-warning text-center" role="alert">
+                            Esse livro está emprestado
+                        </div><%}%>
+                    </div>
+                    <%if(cont % 4 == 0) {%></div><div class="row"> <%}%>
+                    <% } %> 
+                    </div>
+                <%} else { %>
                     <h3>Você não possui nenhum livro cadastrado, utilize o botão ao lado para começar a usar o CoLib</h3>
-                    <% } %>
+                <% } %>
             </div>
             
             <!-- Resultado da busca -->
@@ -201,8 +209,8 @@
                                     <textarea class="form-control" rows="4"  name="conteudoMensagem" placeholder="Quero o seu livro emprestado, como posso pegar..."></textarea>
                                 </div>
 
-                                <button type="submit" class="btn btn-success pull-right" id="enviarMensagem" name="dono">Enviar</button>
-                                <button type="button" class="btn btn-dafault pull-right" data-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-success pull-right" id="enviarMensagem" name="para">Enviar</button>
+                                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Cancelar</button>
                             </form>       
                         </div>
                         <div class="modal-footer">
