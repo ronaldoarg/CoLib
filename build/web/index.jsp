@@ -61,7 +61,7 @@
                 </div>
                 <div class="checkbox">
                   <label>
-                    <input type="checkbox" name="lembrar">Lembrar-me
+                    <input type="checkbox" value="lembrar" name="lembrar">Lembrar-me
                   </label>
                 </div>
                 <button type="submit" class="btn btn-primary pull-right">Entrar</button>

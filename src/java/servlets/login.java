@@ -43,9 +43,7 @@ public class login extends HttpServlet {
         String email = request.getParameter("email");
         String senha = request.getParameter("senha");
         String lembrar = request.getParameter("lembrar");
-        
-        System.out.println("lembrar ------------ \n"+lembrar);
-        
+         
         int idEmail = 0;
         Boolean emailExiste = false;
         Boolean senhaOk = false;

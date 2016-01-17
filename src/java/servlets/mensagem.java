@@ -5,15 +5,13 @@
  */
 package servlets;
 
-import classes.Livro;
 import java.io.IOException;
+import java.io.PrintWriter;
+import static java.lang.Integer.parseInt;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -26,7 +24,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author ronaldo
  */
-public class pesquisa extends HttpServlet {
+public class mensagem extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,71 +37,36 @@ public class pesquisa extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
         
-        HttpSession session = request.getSession(false);        
-        String nome = (String)session.getAttribute("nome");
-        int id = (int)session.getAttribute("id");
-     
-        if (session != null && nome != null) {
-    
-            String busca = request.getParameter("nomeDoLivro").toLowerCase();
-            CharSequence b = busca;
+        HttpSession session = request.getSession(false);
+        String eu = (String)session.getAttribute("nome");
+        
+        if (session != null && eu != null) {
+            int donoDoLivro = Integer.parseInt(request.getParameter("dono"));
+
+            String assuntoMensagem = request.getParameter("assuntoMensagem");
+            String conteudoMensagem = request.getParameter("conteudoMensagem");
             
-            if("".equals(busca)) {
+            int id = (int)session.getAttribute("id");
 
-                session.setAttribute("busca", busca);
-                
-                String buscaError = "Preencha o formulário para realizar uma busca";
-                session.setAttribute("buscaError", buscaError);
-
-                response.sendRedirect("main");
-            } else {
-                try {
+            try {
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/colib?zeroDateTimeBehavior=convertToNull", "root", "admin");
                 Statement statement = conexao.createStatement();
-    
-                String queryLivros = "SELECT * from livros;";
+                                
+                String novaMensagem = "INSERT INTO mensagens (de_id, de_nome, para, assunto, conteudo, visivel) VALUES ("+id+",\""+eu+"\","+donoDoLivro+",\""+assuntoMensagem+"\",\""+conteudoMensagem+"\","+true+")";
                 
-                System.out.println(queryLivros);
+                System.out.println(novaMensagem);
                 
-                ResultSet consultaLivros = statement.executeQuery(queryLivros);
-                
-                List<Livro> livros = new ArrayList<Livro>();
-                
-                while(consultaLivros.next()) {
-                
-                    String nomeLivro = consultaLivros.getString("nome");
-                    Boolean possui = nomeLivro.toLowerCase().contains(b);
-                                   
-                    if(possui) {
-                        
-                        Livro livro = new Livro();
-                        livro.setId(consultaLivros.getInt("id"));
-                        livro.setNome(consultaLivros.getString("nome"));
-                        livro.setAutor(consultaLivros.getString("autor"));
-                        livro.setEdicao(consultaLivros.getInt("edicao"));
-                        livro.setDono(consultaLivros.getInt("dono"));
-                        livro.setDisponivel(consultaLivros.getBoolean("disponivel"));
+                int delnum = statement.executeUpdate(novaMensagem);
 
-                        livros.add(livro);
-                    }
-                }
-                
-                consultaLivros.close();
-                statement.close();
-                conexao.close();
-         
-                session.setAttribute("resultadoBusca", livros);
-                session.setAttribute("busca", "true");
-         
                 response.sendRedirect("main");
-                
+            
                 }  catch (ClassNotFoundException | SQLException ex) {
-                    Logger.getLogger(pesquisa.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(cadastroLivro.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
+            
+            System.out.println("Eu, "+eu+", estou mandando a mensagem \""+conteudoMensagem+"\" com o assunto \""+assuntoMensagem+"\" para o ID: "+donoDoLivro);
         }
     }
 

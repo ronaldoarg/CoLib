@@ -6,7 +6,9 @@
 package servlets;
 
 import classes.Livro;
+import classes.Mensagem;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +29,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author ronaldo
  */
-public class pesquisa extends HttpServlet {
+public class verMensagem extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,71 +42,62 @@ public class pesquisa extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
         
         HttpSession session = request.getSession(false);        
+        
         String nome = (String)session.getAttribute("nome");
         int id = (int)session.getAttribute("id");
+        
+        System.out.println("#################\nid: "+id);
      
         if (session != null && nome != null) {
     
-            String busca = request.getParameter("nomeDoLivro").toLowerCase();
-            CharSequence b = busca;
-            
-            if("".equals(busca)) {
-
-                session.setAttribute("busca", busca);
-                
-                String buscaError = "Preencha o formulário para realizar uma busca";
-                session.setAttribute("buscaError", buscaError);
-
-                response.sendRedirect("main");
-            } else {
-                try {
+            try {
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/colib?zeroDateTimeBehavior=convertToNull", "root", "admin");
                 Statement statement = conexao.createStatement();
     
-                String queryLivros = "SELECT * from livros;";
+                String queryMensagens = "SELECT * from mensagens;";
                 
-                System.out.println(queryLivros);
+                ResultSet consultaMensagens = statement.executeQuery(queryMensagens);
                 
-                ResultSet consultaLivros = statement.executeQuery(queryLivros);
+                List<Mensagem> mensagens = new ArrayList<Mensagem>();
                 
-                List<Livro> livros = new ArrayList<Livro>();
+                while(consultaMensagens.next()) {
                 
-                while(consultaLivros.next()) {
-                
-                    String nomeLivro = consultaLivros.getString("nome");
-                    Boolean possui = nomeLivro.toLowerCase().contains(b);
-                                   
-                    if(possui) {
+                    int mensagemPara = consultaMensagens.getInt("para");
+                    boolean mensagemVisivel = consultaMensagens.getBoolean("visivel");
+                    
+                    if(mensagemPara == id && mensagemVisivel) {
                         
-                        Livro livro = new Livro();
-                        livro.setId(consultaLivros.getInt("id"));
-                        livro.setNome(consultaLivros.getString("nome"));
-                        livro.setAutor(consultaLivros.getString("autor"));
-                        livro.setEdicao(consultaLivros.getInt("edicao"));
-                        livro.setDono(consultaLivros.getInt("dono"));
-                        livro.setDisponivel(consultaLivros.getBoolean("disponivel"));
-
-                        livros.add(livro);
+                        Mensagem mensagem = new Mensagem();
+                        
+                        mensagem.setId(consultaMensagens.getInt("id"));
+                        mensagem.setDe_id(consultaMensagens.getInt("de_id"));
+                        mensagem.setDe_nome(consultaMensagens.getString("de_nome"));
+                        mensagem.setPara(consultaMensagens.getInt("para"));
+                        mensagem.setAssunto(consultaMensagens.getString("assunto"));
+                        mensagem.setConteudo(consultaMensagens.getString("conteudo"));
+                        mensagem.setVisivel(true);
+                        
+                        mensagens.add(mensagem);
                     }
                 }
                 
-                consultaLivros.close();
+                consultaMensagens.close();
                 statement.close();
                 conexao.close();
          
-                session.setAttribute("resultadoBusca", livros);
-                session.setAttribute("busca", "true");
-         
-                response.sendRedirect("main");
+                System.out.println("##############\nTamanho da lista de mensagens: "+mensagens.size());
                 
+                request.setAttribute("mensagens", mensagens);
+                
+                response.sendRedirect("mensagens.jsp");
+                                
                 }  catch (ClassNotFoundException | SQLException ex) {
                     Logger.getLogger(pesquisa.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
+            
         }
     }
 

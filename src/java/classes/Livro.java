@@ -14,6 +14,15 @@ public class Livro {
     private String nome;
     private String autor;
     private int edicao;
+    private int dono;
+
+    public int getDono() {
+        return dono;
+    }
+
+    public void setDono(int dono) {
+        this.dono = dono;
+    }
     private boolean disponivel;
 
     public boolean isDisponivel() {
@@ -55,7 +64,5 @@ public class Livro {
     public void setEdicao(int edicao) {
         this.edicao = edicao;
     }
-    
-    
     
 }

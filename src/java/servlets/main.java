@@ -56,8 +56,6 @@ public class main extends HttpServlet {
                 
                 String queryLivros = "SELECT * from livros WHERE dono = \""+id+"\";";
                 
-                System.out.println(queryLivros);
-                
                 ResultSet consultaLivros = statement.executeQuery(queryLivros);
                 
                 List<Livro> livros = new ArrayList<Livro>();
