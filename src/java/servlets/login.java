@@ -5,6 +5,7 @@
  */
 package servlets;
 
+import classes.BancoDeDados;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -61,8 +62,9 @@ public class login extends HttpServlet {
         
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/colib?zeroDateTimeBehavior=convertToNull", "root", "admin");
-            Statement statement = connection.createStatement();
+            BancoDeDados bd = new BancoDeDados();
+            Connection conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/colib?zeroDateTimeBehavior=convertToNull", bd.getUserBanco(), bd.getSenhaBanco());
+            Statement statement = conexao.createStatement();
            
             ResultSet consultaEmail = statement.executeQuery("SELECT email, id FROM usuarios;");
             
@@ -82,7 +84,7 @@ public class login extends HttpServlet {
             if(!emailExiste) {
 
                 statement.close();
-                connection.close();
+                conexao.close();
                 
                 String loginError = "Email não cadastrado! <br/> Cadastre-se no formulário ao lado ou insira um email válido.";
                 request.setAttribute("loginError", loginError);
@@ -105,7 +107,7 @@ public class login extends HttpServlet {
                 if(!senhaOk) {
 
                     statement.close();
-                    connection.close();
+                    conexao.close();
 
                     String loginError = "Senha inválida! <br/> Tente novamente.";
                     request.setAttribute("loginError", loginError);
@@ -116,7 +118,7 @@ public class login extends HttpServlet {
                 } else {
 
                     statement.close();
-                    connection.close();
+                    conexao.close();
 
                     HttpSession session = request.getSession(true);
                     if(lembrar != null) {

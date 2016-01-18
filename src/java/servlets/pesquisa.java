@@ -5,6 +5,7 @@
  */
 package servlets;
 
+import classes.BancoDeDados;
 import classes.Livro;
 import java.io.IOException;
 import java.sql.Connection;
@@ -61,7 +62,8 @@ public class pesquisa extends HttpServlet {
             } else {
                 try {
                 Class.forName("com.mysql.jdbc.Driver");
-                Connection conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/colib?zeroDateTimeBehavior=convertToNull", "root", "admin");
+                BancoDeDados bd = new BancoDeDados();
+                Connection conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/colib?zeroDateTimeBehavior=convertToNull", bd.getUserBanco(), bd.getSenhaBanco());
                 Statement statement = conexao.createStatement();
     
                 String queryLivros = "SELECT * from livros;";

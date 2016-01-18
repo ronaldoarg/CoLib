@@ -5,6 +5,7 @@
  */
 package servlets;
 
+import classes.BancoDeDados;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -62,8 +63,9 @@ public class cadastroUsuario extends HttpServlet {
         
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/colib?zeroDateTimeBehavior=convertToNull", "root", "admin");
-            Statement statement = connection.createStatement();
+            BancoDeDados bd = new BancoDeDados();
+            Connection conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/colib?zeroDateTimeBehavior=convertToNull", bd.getUserBanco(), bd.getSenhaBanco());
+            Statement statement = conexao.createStatement();
            
             ResultSet resultSet = statement.executeQuery("SELECT email FROM usuarios;");
             
@@ -84,7 +86,7 @@ public class cadastroUsuario extends HttpServlet {
                 
                 resultSet.close();
                 statement.close();
-                connection.close();    
+                conexao.close();    
                 
                 request.setAttribute("emailerror", emailerror);
                 request.setAttribute("nome", nome);
@@ -100,7 +102,7 @@ public class cadastroUsuario extends HttpServlet {
 
                 resultSet.close();
                 statement.close();
-                connection.close();
+                conexao.close();
             }
             
         } catch (ClassNotFoundException | SQLException ex) {

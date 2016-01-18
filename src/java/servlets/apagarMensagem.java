@@ -5,6 +5,7 @@
  */
 package servlets;
 
+import classes.BancoDeDados;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -45,7 +46,9 @@ public class apagarMensagem extends HttpServlet {
             
             try {
                 Class.forName("com.mysql.jdbc.Driver");
-                Connection conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/colib?zeroDateTimeBehavior=convertToNull", "root", "admin");
+                
+                BancoDeDados bd = new BancoDeDados();
+                Connection conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/colib?zeroDateTimeBehavior=convertToNull", bd.getUserBanco(), bd.getSenhaBanco());
                 Statement statement = conexao.createStatement();
                                 
                 String novaMensagem = "UPDATE mensagens SET visivel=0 WHERE id = "+idMsgToDelete+"";

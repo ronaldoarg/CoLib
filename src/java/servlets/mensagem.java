@@ -5,6 +5,7 @@
  */
 package servlets;
 
+import classes.BancoDeDados;
 import java.io.IOException;
 import java.io.PrintWriter;
 import static java.lang.Integer.parseInt;
@@ -55,7 +56,8 @@ public class mensagem extends HttpServlet {
 
             try {
                 Class.forName("com.mysql.jdbc.Driver");
-                Connection conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/colib?zeroDateTimeBehavior=convertToNull", "root", "admin");
+                BancoDeDados bd = new BancoDeDados();
+                Connection conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/colib?zeroDateTimeBehavior=convertToNull", bd.getUserBanco(), bd.getSenhaBanco());
                 Statement statement = conexao.createStatement();
                                 
                 String novaMensagem = "INSERT INTO mensagens (de_id, de_nome, para, assunto, conteudo, visivel) VALUES ("+id+",\""+eu+"\","+msgPara+",\""+assuntoMensagem+"\",\""+conteudoMensagem+"\","+true+")";

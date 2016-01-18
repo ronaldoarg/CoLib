@@ -5,6 +5,7 @@
  */
 package servlets;
 
+import classes.BancoDeDados;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -47,10 +48,6 @@ public class cadastroLivro extends HttpServlet {
             String autorLivro = request.getParameter("autorLivro");
             String edicaoLivro = request.getParameter("edicaoLivro");
 
-            System.out.println("Nome: "+nomeLivro);
-            System.out.println("Autor: "+autorLivro);
-            System.out.println("Edicao: "+edicaoLivro);
-
             if("".equals(nomeLivro) || "".equals(autorLivro) || "".equals(edicaoLivro)) {
 
                 session.setAttribute("nomeLivro", nomeLivro);
@@ -60,13 +57,12 @@ public class cadastroLivro extends HttpServlet {
                 String cadastroLivroError = "Todos os campos são necessários, por favor preencha corretamente.";
                 session.setAttribute("cadastroLivroError", cadastroLivroError);
 
-                System.out.println(cadastroLivroError);
-
                 response.sendRedirect("main");
             } else {
                 try {
                 Class.forName("com.mysql.jdbc.Driver");
-                Connection conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/colib?zeroDateTimeBehavior=convertToNull", "root", "admin");
+                BancoDeDados bd = new BancoDeDados();
+                Connection conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/colib?zeroDateTimeBehavior=convertToNull", bd.getUserBanco(), bd.getSenhaBanco());
                 Statement statement = conexao.createStatement();
                                 
                 String insertLivros = "INSERT INTO livros (nome, autor, edicao, dono, disponivel) VALUES (\""+nomeLivro+"\",\""+autorLivro+"\",\""+edicaoLivro+"\","+id+","+true+")";
