@@ -10,8 +10,8 @@ package classes;
  * @author ronaldo
  */
 public class BancoDeDados {
-    public String userBanco = "root";
-    public String senhaBanco = "admin";
+    public String userBanco = "INSIRA USUARIO DO BANCO DE DADOS AQUI";
+    public String senhaBanco = "INSIRA SENHA DO USUARIO DO BANCO DE DADOS AQUI";
 
     public String getUserBanco() {
         return userBanco;
